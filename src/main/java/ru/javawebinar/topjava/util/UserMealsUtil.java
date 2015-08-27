@@ -49,7 +49,7 @@ public class UserMealsUtil {
         //карта калорий по дням:
         Map<LocalDate, Integer> dayCaloriesSummMap = mealList.stream().collect(Collectors.groupingBy(um -> um.getDateTime().toLocalDate(), Collectors.summingInt(UserMeal::getCalories)));
         //функция маппинга UserMeal на UserMealWithExceed:
-        Function<UserMeal, UserMealWithExceed> mapper = (UserMeal um) -> new UserMealWithExceed(um.getDateTime(), um.getDescription(), um.getCalories(), dayCaloriesSummMap.get(um.getDateTime().toLocalDate()) > caloriesPerDay);
+        Function<UserMeal, UserMealWithExceed> mapper = um -> new UserMealWithExceed(um.getDateTime(), um.getDescription(), um.getCalories(), dayCaloriesSummMap.get(um.getDateTime().toLocalDate()) > caloriesPerDay);
         return mealList.stream().filter(um -> TimeUtil.isBetween(um.getDateTime().toLocalTime(), startTime, endTime)).map(mapper).collect(Collectors.toList());
     }
 }
