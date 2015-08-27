@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class UserMealsUtil {
     public static void main(String[] args) {
-        List<UserMeal> mealList = Arrays.asList(
+        /*List<UserMeal> mealList = Arrays.asList(
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 29, 10, 0), "Завтрак", 500),
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 29, 11, 0), "Завтрак_2", 500),
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 29, 13, 0), "Обед", 500),
@@ -31,6 +31,14 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Ужин", 500),
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 14, 0), "Ужин", 500)
+        );*/
+        List<UserMeal> mealList = Arrays.asList(
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
         );
         getFilteredMealsWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
 //        .toLocalDate();
@@ -88,7 +96,7 @@ public class UserMealsUtil {
             result.clear();
             //карта калорий по дням:
             Map<LocalDate, Integer> dayCaloriesSummMap = mealList.stream().collect(Collectors.toMap((UserMeal um) -> um.getDateTime().toLocalDate(), UserMeal::getCalories, (c1, c2) -> c1 + c2));
-            Predicate<UserMeal> exceedPredicate = (userMeal) -> dayCaloriesSummMap.get(userMeal.getDateTime().toLocalDate())>caloriesPerDay;
+            Predicate<UserMeal> exceedPredicate = (userMeal) -> dayCaloriesSummMap.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay;
             Collector<UserMeal, ArrayList<UserMealWithExceed>, ArrayList<UserMealWithExceed>> collector = Collector.of(
                     ArrayList::new,
                     (ArrayList<UserMealWithExceed> al, UserMeal um) -> {
@@ -102,6 +110,16 @@ public class UserMealsUtil {
             );
             Predicate<UserMeal> rangePredicate = (userMeal) -> TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime);
             result.addAll(mealList.stream().filter(rangePredicate).collect(collector));
+        }
+        {
+            //вариант 4: используя stream map и collect
+            result.clear();
+            //карта калорий по дням:
+            Map<LocalDate, Integer> dayCaloriesSummMap = mealList.stream().collect(Collectors.toMap((UserMeal um) -> um.getDateTime().toLocalDate(), UserMeal::getCalories, (c1, c2) -> c1 + c2));
+            Predicate<UserMeal> exceedPredicate = (userMeal) -> dayCaloriesSummMap.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay;
+            Predicate<UserMeal> rangePredicate = (userMeal) -> TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime);
+            Function<UserMeal, UserMealWithExceed> mapper = (UserMeal um) -> new UserMealWithExceed(um.getDateTime(), um.getDescription(), um.getCalories(), exceedPredicate.test(um));
+            result.addAll(mealList.stream().filter(rangePredicate).map(mapper).collect(Collectors.toList()));
         }
         return result;
     }
