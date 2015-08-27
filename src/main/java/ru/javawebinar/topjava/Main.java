@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava;
 
+import ru.javawebinar.topjava.util.UserMealsUtil;
+
 /**
  * User: gkislin
  * Date: 05.08.2015
