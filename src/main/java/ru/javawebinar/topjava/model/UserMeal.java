@@ -31,5 +31,13 @@ public class UserMeal {
         return calories;
     }
 
-
+    //TODO убрать public String toString()
+    @Override
+    public String toString() {
+        return "\n UserMeal{" +
+                "dateTime=" + dateTime +
+                ", description='" + description + '\'' +
+                ", calories=" + calories +
+                '}';
+    }
 }

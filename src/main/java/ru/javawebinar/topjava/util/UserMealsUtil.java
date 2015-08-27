@@ -75,6 +75,8 @@ public class UserMealsUtil {
             };
             filteredList.forEach(consumer); //ходим по отфильтрованному списку и формируем List<UserMealWithExceed>
             //
+            System.out.println("\n Вариант 1: ");
+            System.out.println(result);
         }
         {
             //вариант 2: используя stream  с предварительным маппингом сумм дневных калорий на даты
@@ -90,6 +92,8 @@ public class UserMealsUtil {
                             um.getCalories(),
                             dayCaloriesSummMap.get(um.getDateTime().toLocalDate()) > caloriesPerDay))
             );
+            System.out.println("\n Вариант 2: ");
+            System.out.println(result);
         }
         {
             //вариант 3: используя stream и Collector
@@ -110,6 +114,9 @@ public class UserMealsUtil {
             );
             Predicate<UserMeal> rangePredicate = (userMeal) -> TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime);
             result.addAll(mealList.stream().filter(rangePredicate).collect(collector));
+            System.out.println("\n Вариант 3: ");
+            System.out.println(result);
+
         }
         {
             //вариант 4: используя stream map и collect
@@ -120,6 +127,9 @@ public class UserMealsUtil {
             Predicate<UserMeal> rangePredicate = (userMeal) -> TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime);
             Function<UserMeal, UserMealWithExceed> mapper = (UserMeal um) -> new UserMealWithExceed(um.getDateTime(), um.getDescription(), um.getCalories(), exceedPredicate.test(um));
             result.addAll(mealList.stream().filter(rangePredicate).map(mapper).collect(Collectors.toList()));
+
+            System.out.println("\n Вариант 4: ");
+            System.out.println(result);
         }
         return result;
     }

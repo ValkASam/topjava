@@ -22,5 +22,14 @@ public class UserMealWithExceed {
         this.exceed = exceed;
     }
 
-
+    @Override
+    //TODO убрать public String toString()
+    public String toString() {
+        return "\n UserMealWithExceed{" +
+                "dateTime=" + dateTime +
+                ", description='" + description + '\'' +
+                ", calories=" + calories +
+                ", exceed=" + exceed +
+                '}';
+    }
 }
