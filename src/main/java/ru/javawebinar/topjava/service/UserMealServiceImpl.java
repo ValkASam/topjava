@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava.service;
 
-import ru.javawebinar.topjava.dao.UserMealDaoInMemoryImpl;
+import ru.javawebinar.topjava.dao.UserMealDaoInMemoryImp;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExceed;
 
@@ -12,7 +12,7 @@ import java.util.Map;
  * Created by Valk on 11.09.15.
  */
 public class UserMealServiceImpl implements UserMealService {
-    private static UserMealDaoInMemoryImpl userMealDaoInMemory = new UserMealDaoInMemoryImpl();
+    private static UserMealDaoInMemoryImp userMealDaoInMemory = new UserMealDaoInMemoryImp();
 
     @Override
     public List<UserMealWithExceed> read() {
