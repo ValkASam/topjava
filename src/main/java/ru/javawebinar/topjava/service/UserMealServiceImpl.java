@@ -4,7 +4,6 @@ import ru.javawebinar.topjava.dao.UserMealDaoInMemoryImp;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExceed;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -15,23 +14,18 @@ public class UserMealServiceImpl implements UserMealService {
     private static UserMealDaoInMemoryImp userMealDaoInMemory = new UserMealDaoInMemoryImp();
 
     @Override
-    public List<UserMealWithExceed> read() {
-        return userMealDaoInMemory.read();
+    public List<UserMealWithExceed> getAll() {
+        return userMealDaoInMemory.getAll();
     }
 
     @Override
-    public UserMeal read(LocalDateTime dateTime) {
-        return userMealDaoInMemory.read(dateTime);
+    public UserMeal getById(Long id) {
+        return userMealDaoInMemory.getById(id);
     }
 
     @Override
-    public UserMeal read(Long id) {
-        return userMealDaoInMemory.read(id);
-    }
-
-    @Override
-    public List<UserMealWithExceed> read(Map<String, String[]> map) {
-        return userMealDaoInMemory.read(map);
+    public List<UserMealWithExceed> getByDateTime(Map<String, String[]> map) {
+        return userMealDaoInMemory.getByDateTime(map);
     }
 
     @Override

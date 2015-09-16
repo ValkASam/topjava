@@ -40,7 +40,7 @@ public class MealServlet extends HttpServlet {
                         request,
                         response,
                         new UserMealSerializer(),
-                        userMealServiceImpl.read(Long.parseLong(request.getParameter("id"))));
+                        userMealServiceImpl.getById(Long.parseLong(request.getParameter("id"))));
                 break;
             }
             case "/loaddata": { //загрузка данных с учетом фильтра
@@ -49,12 +49,12 @@ public class MealServlet extends HttpServlet {
                         request,
                         response,
                         new UserMealWithExceedSerializer(),
-                        userMealServiceImpl.read((HashMap<String, String[]>) request.getParameterMap()));
+                        userMealServiceImpl.getByDateTime((HashMap<String, String[]>) request.getParameterMap()));
                 break;
             }
             case "/": {
                 LOG.debug("redirect to mealList");
-                request.setAttribute("meals", userMealServiceImpl.read());
+                request.setAttribute("meals", userMealServiceImpl.getAll());
                 request.getRequestDispatcher("/view/mealList.jsp").forward(request, response);
                 break;
             }
