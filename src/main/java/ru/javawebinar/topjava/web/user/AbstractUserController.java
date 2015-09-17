@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.LoggerWrapper;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.service.UserServiceImpl;
 
 import java.util.List;
 
@@ -13,8 +14,8 @@ import java.util.List;
 public abstract class AbstractUserController {
     protected final LoggerWrapper LOG = LoggerWrapper.get(getClass());
 
-    @Autowired
-    private UserService service;
+    //@Autowired
+    private UserService service = new UserServiceImpl();
 
     public List<User> getAll() {
         LOG.info("getAll");
