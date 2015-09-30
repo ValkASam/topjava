@@ -1,5 +1,6 @@
 DELETE FROM user_roles;
 DELETE FROM users;
+DELETE FROM meals; --не обязательно - каскадно очиститься
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
 -- password
