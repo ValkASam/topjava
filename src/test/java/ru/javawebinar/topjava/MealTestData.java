@@ -38,6 +38,6 @@ public class MealTestData {
     }
 
     public static UserMeal getUpdated() {
-        return new UserMeal(MEAL1_ID, MEAL1.getDateTime(), "Обновленный завтрак", 200);
+        return new UserMeal(MEAL1_ID, MEAL1.getDateTime().plusDays(10), "Обновленный завтрак", 200);
     }
 }
