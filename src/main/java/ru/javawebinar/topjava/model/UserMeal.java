@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  * GKislin
  * 11.01.2015.
  */
+
 @NamedQueries({
         //@NamedQuery(name = UserMeal.ALL, query = "SELECT m FROM UserMeal m LEFT JOIN FETCH m.user") //не понял зачем (если брать по аналогии с User) делать тут JOIN - весь LAZY коту под хвост
         @NamedQuery(name = UserMeal.ALL_SORTED, query = "SELECT m FROM UserMeal m WHERE m.user.id=:user_id ORDER BY m.dateTime DESC"),
