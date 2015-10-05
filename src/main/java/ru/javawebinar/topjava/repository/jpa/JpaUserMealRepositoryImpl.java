@@ -32,6 +32,15 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository {
             em.persist(userMeal);
             return userMeal;
         } else {
+            /*if (em.createNamedQuery(UserMeal.UPDATE) //традиционный вариант - такое уже было. Испытаем новенькое
+                    .setParameter("dateTime", userMeal.getDateTime())
+                    .setParameter("description", userMeal.getDescription())
+                    .setParameter("calories", userMeal.getCalories())
+                    .setParameter("id", userMeal.getId())
+                    .setParameter("user_id", userId)
+                    .executeUpdate()
+                    == 0) return null;
+            return userMeal;*/
             CriteriaBuilder builder = em.getCriteriaBuilder();
             CriteriaUpdate<UserMeal> query = builder.createCriteriaUpdate(UserMeal.class);
             Root<UserMeal> meal = query.from(UserMeal.class);
