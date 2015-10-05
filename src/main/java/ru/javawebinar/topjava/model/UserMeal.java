@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
         @NamedQuery(name = UserMeal.ALL_SORTED, query = "SELECT m FROM UserMeal m WHERE m.user.id=:user_id ORDER BY m.dateTime DESC"),
         @NamedQuery(name = UserMeal.BETWEEN, query = "SELECT m FROM UserMeal m WHERE m.user.id=:user_id AND m.dateTime BETWEEN :start_date AND :end_date ORDER BY m.dateTime DESC"),
         @NamedQuery(name = UserMeal.BY_ID, query = "SELECT m FROM UserMeal m WHERE m.id=:id AND m.user.id=:user_id"),
-        @NamedQuery(name = UserMeal.DELETE, query = "DELETE FROM UserMeal m WHERE m.id=:id AND m.user.id=:user_id")
+        @NamedQuery(name = UserMeal.DELETE, query = "DELETE FROM UserMeal m WHERE m.id=:id AND m.user.id=:user_id"),
+        @NamedQuery(name = UserMeal.UPDATE, query = "UPDATE UserMeal um SET um.dateTime=:dateTime, um.description=:description, um.calories=:calories WHERE um.user.id=:user_id AND um.id=:id")
 })
 @Entity
 @Table(name = "meals")
@@ -26,6 +27,7 @@ public class UserMeal extends BaseEntity {
     public static final String BETWEEN = "UserMeal.getBetween";
     public static final String BY_ID = "UserMeal.getById";
     public static final String DELETE = "UserMeal.delete";
+    public static final String UPDATE = "UserMeal.update";
 
     @Column(name = "date_time")
     //@Convert(converter = LocalDateTimePersistenceConverter.class) реализовано через поддержку хибернейтом 5
