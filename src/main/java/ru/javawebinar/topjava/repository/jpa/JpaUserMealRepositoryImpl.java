@@ -27,8 +27,10 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository {
     @Override
     public UserMeal save(UserMeal userMeal, int userId) {
         if (userMeal.isNew()) {
-            userMeal.setUser(new User());
-            userMeal.getUser().setId(userId);
+            /*userMeal.setUser(new User());
+            userMeal.getUser().setId(userId);*/
+            User ref = em.getReference(User.class, userId); //подумал и согласен, что такой вариант кошерней
+            userMeal.setUser(ref);
             em.persist(userMeal);
             return userMeal;
         } else {
@@ -40,7 +42,8 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository {
                     .setParameter("user_id", userId)
                     .executeUpdate()
                     == 0) return null;
-            return userMeal;*/
+            return userMeal;
+            */
             CriteriaBuilder builder = em.getCriteriaBuilder();
             CriteriaUpdate<UserMeal> query = builder.createCriteriaUpdate(UserMeal.class);
             Root<UserMeal> meal = query.from(UserMeal.class);
