@@ -2,12 +2,14 @@ package ru.javawebinar.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.repository.UserMealRepository;
 import ru.javawebinar.topjava.util.exception.ExceptionUtil;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * GKislin
@@ -47,5 +49,10 @@ public class UserMealServiceImpl implements UserMealService {
     @Override
     public UserMeal save(UserMeal meal, int userId) {
         return repository.save(meal, userId);
+    }
+
+    @Override
+    public Collection<UserMeal> getAllWithUser(int userId) {
+        return repository.getAllWithUser(userId);
     }
 }

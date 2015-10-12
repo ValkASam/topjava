@@ -21,6 +21,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -33,7 +35,10 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-public class UserMealServiceTest {
+/*
+abstract чтобы гарантировать вызов тестов из наследников
+*/
+public abstract class UserMealServiceTest {
     private static final LoggerWrapper LOG = LoggerWrapper.get(UserMealServiceTest.class);
 
     @Rule
@@ -111,5 +116,11 @@ public class UserMealServiceTest {
     public void testGetBetween() throws Exception {
         MATCHER.assertCollectionEquals(Arrays.asList(MEAL3, MEAL2, MEAL1),
                 service.getBetweenDates(LocalDate.of(2015, Month.MAY, 30), LocalDate.of(2015, Month.MAY, 30), USER_ID));
+    }
+
+    //Тестируем доставание вместе с едой
+    @Test
+    public void testGetAllWithUser() throws Exception {
+        MATCHER.assertCollectionEquals(USER_MEALS_DEEP, service.getAllWithUser(USER_ID));
     }
 }

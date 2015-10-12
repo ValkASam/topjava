@@ -6,8 +6,11 @@ import ru.javawebinar.topjava.Profiles;
 /**
  * Created by Valk on 10.10.15.
  */
-@ActiveProfiles({Profiles.HSQLDB, Profiles.JPA})
-public class UserMealServiceTest_Hsqldb_Jpa extends UserMealServiceTest {
+/*
+Вариант Profiles.HSQLDB_MEMORY только для JPA, чтобы не плодить
+*/
+@ActiveProfiles({Profiles.HSQLDB_MEMORY, Profiles.JPA})
+public class UserMealServiceTest_HsqldbMemory_Jpa extends UserMealServiceTest {
     @Override
     public void testDelete() throws Exception {
         super.testDelete();

@@ -2,19 +2,24 @@ package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.repository.UserMealRepository;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: gkislin
@@ -28,6 +33,7 @@ public class JdbcUserMealRepositoryImpl implements UserMealRepository {
             (rs, rowNum) ->
                     new UserMeal(rs.getInt("id"), rs.getTimestamp("date_time").toLocalDateTime(),
                             rs.getString("description"), rs.getInt("calories"));
+    private static final BeanPropertyRowMapper<User> USER_ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -87,5 +93,15 @@ public class JdbcUserMealRepositoryImpl implements UserMealRepository {
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id=?  AND date_time BETWEEN  ? AND ? ORDER BY date_time DESC",
                 ROW_MAPPER, userId, Timestamp.valueOf(startDate), Timestamp.valueOf(endDate));
+    }
+
+    @Override
+    public Collection<UserMeal> getAllWithUser(int userId) {
+        List<UserMeal> meals = getAll(userId);
+        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", USER_ROW_MAPPER, userId);
+        User user = DataAccessUtils.singleResult(users);
+        user.setMeals(meals);
+        meals.forEach(m->m.setUser(user));
+        return meals;
     }
 }

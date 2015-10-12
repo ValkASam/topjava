@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,7 +18,7 @@ import java.util.Set;
 @NamedQueries({
         @NamedQuery(name = User.DELETE, query = "DELETE FROM User u WHERE u.id=:id"),
         @NamedQuery(name = User.BY_EMAIL, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email=?1"),
-        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles ORDER BY u.name, u.email"),
+        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles ORDER BY u.name, u.email")
 })
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "unique_email")})
@@ -54,6 +55,13 @@ public class User extends NamedEntity {
     @Column(name = "calories_per_day", columnDefinition = "default 2000")
     @Digits(fraction = 0, integer = 4)
     protected int caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
+
+    @OneToMany(fetch = FetchType.LAZY, //от LAZY не отказываемся, не упрощаем жизнь. НО работать должно и для EAGER
+            mappedBy="user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @OrderBy("dateTime DESC")
+    protected List<UserMeal> meals;
 
     public User() {
     }
@@ -117,6 +125,14 @@ public class User extends NamedEntity {
 
     public String getPassword() {
         return password;
+    }
+
+    public List<UserMeal> getMeals() {
+        return meals;
+    }
+
+    public void setMeals(List<UserMeal> meals) {
+        this.meals = meals;
     }
 
     @Override

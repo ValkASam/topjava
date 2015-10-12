@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.LazyInitializationException;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -40,7 +41,7 @@ public class UserMeal extends BaseEntity {
     @Column(name = "calories")
     protected int calories;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) //от LAZY не отказываемся, не упрощаем жизнь. НО работать должно и для EAGER
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -56,6 +57,10 @@ public class UserMeal extends BaseEntity {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
+    }
+
+    public UserMeal(UserMeal userMeal) {
+        this(userMeal.getId(), userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories());
     }
 
     public void setId(int id) {

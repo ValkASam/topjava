@@ -15,7 +15,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * GKislin
@@ -30,10 +32,15 @@ public class DataJpaUserMealRepositoryImpl implements UserMealRepository {
     @Override
     public UserMeal save(UserMeal userMeal, int userId) {
         if (userMeal.isNew()) {
+            //в отличие от DataSpring не испольуем референс на объект (прокси-объект)
+            //поэтому учитывать, что портим входящий userMeal
+            UserMeal meal = new UserMeal(userMeal);
             User user = new User();
             user.setId(userId);
-            userMeal.setUser(user);
-            return proxy.save(userMeal);
+            meal.setUser(user);
+            meal = proxy.save(meal);
+            userMeal.setId(meal.getId());
+            return meal;
         } else {
             UserMeal meal =  proxy.findOne(userMeal.getId(), userId);
             if (meal == null) return null;
@@ -59,7 +66,7 @@ public class DataJpaUserMealRepositoryImpl implements UserMealRepository {
         List<UserMeal> findAllByUserOrderByDateTimeDesc(User user);
 
         МИНУС: запрос будет строиться через left join user
-        (все самогенерирующиеся запросы стремятся к завязыванию таблиц, не моможет и
+        (все самогенерирующиеся запросы стремятся к завязыванию таблиц в запросах, не моможет и
         findAllByUser_IdOrderByDateTimeDesc(userId))
         */
 
@@ -107,5 +114,10 @@ public class DataJpaUserMealRepositoryImpl implements UserMealRepository {
     @Override
     public List<UserMeal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
         return proxy.findAllBetween(startDate, endDate, userId);
+    }
+
+    @Override
+    public Collection<UserMeal> getAllWithUser(int userId) {
+        return proxy.getAllWithUser(userId);
     }
 }

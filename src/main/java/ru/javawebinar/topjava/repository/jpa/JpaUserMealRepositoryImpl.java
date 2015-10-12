@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.repository.jpa;
 
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
@@ -9,8 +10,12 @@ import ru.javawebinar.topjava.repository.UserMealRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: gkisline
@@ -29,7 +34,8 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository {
     public UserMeal save(UserMeal userMeal, int userId) {
         User ref = em.getReference(User.class, userId);
         userMeal.setUser(ref);
-
+        //userMeal.setUser(ref) не портит userMeal (по нему после выхода будет сравнение в тестах) - т.к.
+        //прокси объект останется не реализованным,  и мы это отловим
         if (userMeal.isNew()) {
             em.persist(userMeal);
             return userMeal;
@@ -70,5 +76,12 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository {
                 .setParameter("userId", userId)
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate).getResultList();
+    }
+
+    @Override
+    public List<UserMeal> getAllWithUser(int userId) {
+        List<UserMeal> meals = getAll(userId);
+        if (!meals.isEmpty()) meals.iterator().next().getUser().getId(); //весь список не нужен - юзер один на всех
+        return meals;
     }
 }

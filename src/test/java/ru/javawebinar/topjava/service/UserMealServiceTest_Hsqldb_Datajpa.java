@@ -52,4 +52,9 @@ public class UserMealServiceTest_Hsqldb_Datajpa extends UserMealServiceTest {
     public void testGetBetween() throws Exception {
         super.testGetBetween();
     }
+
+    @Override
+    public void testGetAllWithUser() throws Exception {
+        super.testGetAllWithUser();
+    }
 }

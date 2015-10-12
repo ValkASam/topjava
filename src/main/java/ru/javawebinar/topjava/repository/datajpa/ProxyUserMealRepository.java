@@ -11,6 +11,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -43,4 +44,13 @@ public interface ProxyUserMealRepository extends JpaRepository<UserMeal, Integer
     List<UserMeal> findAllByUserIdOrderByDateTimeDesc(Integer userId); //Для примера
 
     UserMeal findOne(Specification<UserMeal> spec); //Для примера
+
+
+    //реализация в интерфейсе, чтобы оставаться в контексте текущей Session, что необходимо для
+    //возможности дергать ленивый прокси-объект
+    default public Collection<UserMeal> getAllWithUser(int userId) {
+        List<UserMeal> meals = findAll(userId);
+        if (!meals.isEmpty()) meals.iterator().next().getUser().getId(); //весь список не нужен - юзер один на всех
+        return meals;
+    }
 }

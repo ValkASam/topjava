@@ -1,8 +1,10 @@
 package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.model.UserMeal;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * User: gkislin
@@ -21,4 +23,13 @@ public interface UserRepository {
     User getByEmail(String email);
 
     Collection<User> getAll();
+
+
+    //методы загрузки пользователей вместе с едой с учетом, что может быть FetchType.LAZY
+    //для jdbc, jpa, datajpa своя реализация
+    public Collection<User> getAllWithMeals();
+
+    public User getWithMeals(int id);
+
+    public User updateLazy(User user);
 }

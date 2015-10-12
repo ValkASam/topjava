@@ -1,11 +1,13 @@
 package ru.javawebinar.topjava.service;
 
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * GKislin
@@ -27,4 +29,8 @@ public interface UserMealService {
     UserMeal update(UserMeal meal, int userId);
 
     UserMeal save(UserMeal meal, int userId);
+
+    //Map<User, Collection<UserMeal>> getAllWithUser(int userId);
+
+    Collection<UserMeal> getAllWithUser(int userId);
 }

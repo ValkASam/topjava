@@ -1,12 +1,14 @@
 package ru.javawebinar.topjava;
 
+import org.hibernate.LazyInitializationException;
 import ru.javawebinar.topjava.matcher.ModelMatcher;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.model.UserMeal;
+import ru.javawebinar.topjava.service.UserMealService;
 
-import java.util.EnumSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.model.BaseEntity.START_SEQ;
 
@@ -21,12 +23,28 @@ public class UserTestData {
     public static final User USER = new User(USER_ID, "User", "user@yandex.ru", "password", Role.ROLE_USER);
     public static final User ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ROLE_ADMIN);
 
+    public static final List<User> USERS = Arrays.asList(ADMIN, USER);
+
+    public static final List<User> USERS_DEEP = USERS
+            .stream()
+            .map(UserTestData::addMeals)
+            .collect(Collectors.toList());
+
+    public static User addMeals(User user) {
+        User u = new User(user);
+        if (user.equals(USER)) u.setMeals(MealTestData.USER_MEALS);
+        if (user.equals(ADMIN)) u.setMeals(MealTestData.ADMIN_MEALS);
+        return u;
+    }
+
     public static final ModelMatcher<User, TestUser> MATCHER = new ModelMatcher<>(u -> ((u instanceof TestUser) ? (TestUser) u : new TestUser(u)));
 
     public static class TestUser extends User {
 
         public TestUser(User u) {
             this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.getCaloriesPerDay(), u.isEnabled(), u.getRoles());
+            if (u.getMeals() != null)
+                this.setMeals(u.getMeals());
         }
 
         public TestUser(String name, String email, String password, Role role, Role... roles) {
@@ -61,14 +79,26 @@ public class UserTestData {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-
             TestUser that = (TestUser) o;
-            return Objects.equals(this.password, that.password)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.name, that.name)
-                    && Objects.equals(this.email, that.email)
-                    && Objects.equals(this.caloriesPerDay, that.caloriesPerDay)
-                    && Objects.equals(this.enabled, that.enabled);
+            if (this.getMeals() == null) {
+                //если в качестве образца передаем ленивый объект (не инициирован список еды)
+                //то делаем ленивую проверку
+                return Objects.equals(this.password, that.password)
+                        && Objects.equals(this.id, that.id)
+                        && Objects.equals(this.name, that.name)
+                        && Objects.equals(this.email, that.email)
+                        && Objects.equals(this.caloriesPerDay, that.caloriesPerDay)
+                        && Objects.equals(this.enabled, that.enabled);
+            } else {
+                //если передали полный объект, то делаем полную проверку
+                return Objects.equals(this.password, that.password)
+                        && Objects.equals(this.id, that.id)
+                        && Objects.equals(this.name, that.name)
+                        && Objects.equals(this.email, that.email)
+                        && Objects.equals(this.caloriesPerDay, that.caloriesPerDay)
+                        && Objects.equals(this.enabled, that.enabled)
+                        && (new ArrayList<>(this.meals).equals(new ArrayList<>(that.meals)));
+            }
         }
     }
 }
