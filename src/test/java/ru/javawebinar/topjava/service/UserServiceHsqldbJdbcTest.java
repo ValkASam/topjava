@@ -2,15 +2,12 @@ package ru.javawebinar.topjava.service;
 
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.Profiles;
-import ru.javawebinar.topjava.UserTestData;
-
-import static ru.javawebinar.topjava.UserTestData.*;
 
 /**
  * Created by Valk on 11.10.15.
  */
-@ActiveProfiles({Profiles.HSQLDB_MEMORY, Profiles.JPA})
-public class UserServiceTest_HsqldbMemory_Jpa extends UserServiceTest {
+@ActiveProfiles({Profiles.HSQLDB, Profiles.JDBC})
+public class UserServiceHsqldbJdbcTest extends UserServiceTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -58,17 +55,16 @@ public class UserServiceTest_HsqldbMemory_Jpa extends UserServiceTest {
 
     @Override
     public void testUpdate() throws Exception {
-        UserTestData.TestUser updated = new UserTestData.TestUser(USER);
-        updated.setName("UpdatedName");
-        updated.setCaloriesPerDay(330);
-        service.updateLazy(updated.asUser());   //вместо service.update: при включенных cascade = CascadeType.ALL,
-        //и orphanRemoval = true сохранение такого объекта не выйдет. А включено для варианта редактирования с учетом
-        //связи с едой - см. testUpdateWithMeals() - для изучения такого способа работы
-        MATCHER.assertEquals(updated, service.get(USER_ID));
+        super.testUpdate();
     }
 
     @Override
     public void testGetAllWithMeals() throws Exception {
         super.testGetAllWithMeals();
+    }
+
+    @Override
+    public void testUpdateWithMeals() throws Exception {
+        super.testUpdateWithMeals();
     }
 }

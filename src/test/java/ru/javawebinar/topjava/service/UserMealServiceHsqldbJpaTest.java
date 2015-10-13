@@ -6,8 +6,8 @@ import ru.javawebinar.topjava.Profiles;
 /**
  * Created by Valk on 10.10.15.
  */
-@ActiveProfiles({Profiles.POSTGRES, Profiles.JPA})
-public class UserMealServiceTest_Postgresql_Jpa extends UserMealServiceTest {
+@ActiveProfiles({Profiles.HSQLDB, Profiles.JPA})
+public class UserMealServiceHsqldbJpaTest extends UserMealServiceTest {
     @Override
     public void testDelete() throws Exception {
         super.testDelete();
@@ -51,5 +51,10 @@ public class UserMealServiceTest_Postgresql_Jpa extends UserMealServiceTest {
     @Override
     public void testGetBetween() throws Exception {
         super.testGetBetween();
+    }
+
+    @Override
+    public void testGetAllWithUser() throws Exception {
+        super.testGetAllWithUser();
     }
 }

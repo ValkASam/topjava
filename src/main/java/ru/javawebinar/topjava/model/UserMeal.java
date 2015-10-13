@@ -41,7 +41,7 @@ public class UserMeal extends BaseEntity {
     @Column(name = "calories")
     protected int calories;
 
-    @ManyToOne(fetch = FetchType.LAZY) //от LAZY не отказываемся, не упрощаем жизнь. НО работать должно и для EAGER
+    @ManyToOne(fetch = FetchType.EAGER) //от LAZY не отказываемся, не упрощаем жизнь. НО работать должно и для EAGER
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

@@ -10,7 +10,7 @@ import ru.javawebinar.topjava.Profiles;
 Вариант Profiles.HSQLDB_MEMORY только для JPA, чтобы не плодить
 */
 @ActiveProfiles({Profiles.HSQLDB_MEMORY, Profiles.JPA})
-public class UserMealServiceTest_HsqldbMemory_Jpa extends UserMealServiceTest {
+public class UserMealServiceHsqldbMemoryJpaTest extends UserMealServiceTest {
     @Override
     public void testDelete() throws Exception {
         super.testDelete();

@@ -25,25 +25,25 @@ public interface ProxyUserMealRepository extends JpaRepository<UserMeal, Integer
 
     @Query(name = UserMeal.GET)
     UserMeal findOne(@Param("id")Integer id, @Param("userId")Integer userId);
+    //альтернатива UserMeal findOne(Specification<UserMeal> spec);
 
     @Modifying
     @Transactional
     @Query(name = UserMeal.DELETE)
     int delete(@Param("id")Integer id, @Param("userId")Integer userId);
+    /*альтернатива @Transactional
+    Integer deleteByIdAndUser_id(Integer id, Integer userId);*/
 
     @Query(name = UserMeal.ALL_SORTED)
     List<UserMeal> findAll(@Param("userId")Integer userId);
+    //альтернатива List<UserMeal> findAllByUserIdOrderByDateTimeDesc(Integer userId);
+    //альтернатива List<UserMeal> findAll(Specification<UserMeal> spec, Sort sort);
 
     @Query(name = UserMeal.GET_BETWEEN)
     List<UserMeal> findAllBetween(@Param("startDate") LocalDateTime startDate,
                                   @Param("endDate") LocalDateTime endDate,
                                   @Param("userId")Integer userId);
 
-    List<UserMeal> findAll(Specification<UserMeal> spec, Sort sort); //Для примера
-
-    List<UserMeal> findAllByUserIdOrderByDateTimeDesc(Integer userId); //Для примера
-
-    UserMeal findOne(Specification<UserMeal> spec); //Для примера
 
 
     //реализация в интерфейсе, чтобы оставаться в контексте текущей Session, что необходимо для

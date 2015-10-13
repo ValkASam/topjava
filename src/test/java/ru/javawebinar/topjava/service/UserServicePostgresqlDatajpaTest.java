@@ -9,8 +9,8 @@ import static ru.javawebinar.topjava.UserTestData.*;
 /**
  * Created by Valk on 11.10.15.
  */
-@ActiveProfiles({Profiles.POSTGRES, Profiles.JPA})
-public class UserServiceTest_Postgresql_Jpa extends UserServiceTest {
+@ActiveProfiles({Profiles.POSTGRES, Profiles.DATAJPA})
+public class UserServicePostgresqlDatajpaTest extends UserServiceTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();

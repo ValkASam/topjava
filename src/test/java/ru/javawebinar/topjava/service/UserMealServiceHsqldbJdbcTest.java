@@ -7,7 +7,7 @@ import ru.javawebinar.topjava.Profiles;
  * Created by Valk on 10.10.15.
  */
 @ActiveProfiles({Profiles.HSQLDB, Profiles.JDBC})
-public class UserMealServiceTest_Hsqldb_Jdbc extends UserMealServiceTest {
+public class UserMealServiceHsqldbJdbcTest extends UserMealServiceTest {
     @Override
     public void testDelete() throws Exception {
         super.testDelete();

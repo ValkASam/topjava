@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.repository.UserMealRepository;
@@ -29,24 +30,35 @@ public class DataJpaUserMealRepositoryImpl implements UserMealRepository {
     @Autowired
     ProxyUserMealRepository proxy;
 
+    @Autowired
+    ProxyUserRepository userproxy;
+
     @Override
     public UserMeal save(UserMeal userMeal, int userId) {
         if (userMeal.isNew()) {
             //в отличие от DataSpring не испольуем референс на объект (прокси-объект)
             //поэтому учитывать, что портим входящий userMeal
-            UserMeal meal = new UserMeal(userMeal);
+            /*UserMeal meal = new UserMeal(userMeal);
             User user = new User();
             user.setId(userId);
             meal.setUser(user);
             meal = proxy.save(meal);
             userMeal.setId(meal.getId());
-            return meal;
+            return meal;*/
+            User user = userproxy.getOne(userId);
+            userMeal.setUser(user);
+            return proxy.save(userMeal);
+
         } else {
             UserMeal meal =  proxy.findOne(userMeal.getId(), userId);
             if (meal == null) return null;
             userMeal.setUser(meal.getUser());
             return proxy.save(userMeal);
         }
+    }
+
+    void delete (UserMeal userMeal){
+        proxy.delete(userMeal);
     }
 
     @Override

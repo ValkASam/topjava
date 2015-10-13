@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.model;
 import ru.javawebinar.topjava.LoggerWrapper;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * User: gkislin
@@ -10,7 +11,7 @@ import javax.persistence.*;
  */
 @MappedSuperclass
 @Access(AccessType.FIELD)
-public class BaseEntity {
+public class BaseEntity{
     protected static final LoggerWrapper LOG = LoggerWrapper.get(BaseEntity.class);
 
     public static final int START_SEQ = 100000;

@@ -9,8 +9,8 @@ import static ru.javawebinar.topjava.UserTestData.*;
 /**
  * Created by Valk on 11.10.15.
  */
-@ActiveProfiles({Profiles.HSQLDB, Profiles.DATAJPA})
-public class UserServiceTest_Hsqldb_Datajpa extends UserServiceTest {
+@ActiveProfiles({Profiles.POSTGRES, Profiles.JPA})
+public class UserServicePostgresqlJpaTest extends UserServiceTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -70,10 +70,5 @@ public class UserServiceTest_Hsqldb_Datajpa extends UserServiceTest {
     @Override
     public void testGetAllWithMeals() throws Exception {
         super.testGetAllWithMeals();
-    }
-
-    @Override
-    public void testUpdateWithMeals() throws Exception {
-        super.testUpdateWithMeals();
     }
 }

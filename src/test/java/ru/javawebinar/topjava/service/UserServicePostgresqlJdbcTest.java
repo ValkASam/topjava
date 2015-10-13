@@ -7,7 +7,7 @@ import ru.javawebinar.topjava.Profiles;
  * Created by Valk on 11.10.15.
  */
 @ActiveProfiles({Profiles.POSTGRES, Profiles.JDBC})
-public class UserServiceTest_Postgresql_Jdbc extends UserServiceTest {
+public class UserServicePostgresqlJdbcTest extends UserServiceTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();

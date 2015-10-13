@@ -6,8 +6,8 @@ import ru.javawebinar.topjava.Profiles;
 /**
  * Created by Valk on 10.10.15.
  */
-@ActiveProfiles({Profiles.POSTGRES, Profiles.JDBC})
-public class UserMealServiceTest_Postgresql_Jdbc extends UserMealServiceTest {
+@ActiveProfiles({Profiles.POSTGRES, Profiles.JPA})
+public class UserMealServicePostgresqlJpaTest extends UserMealServiceTest {
     @Override
     public void testDelete() throws Exception {
         super.testDelete();

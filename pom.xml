@@ -48,8 +48,33 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <!--==-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <fork>true</fork>
+                    <executable>c:\Program Files\Java\jdk1.8.0_25\bin\javac.exe</executable>
+                </configuration>
+            </plugin>
+            <!--==-->
         </plugins>
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
     </build>
+
+
 
     <dependencies>
         <!-- Logging with SLF4J & LogBack -->

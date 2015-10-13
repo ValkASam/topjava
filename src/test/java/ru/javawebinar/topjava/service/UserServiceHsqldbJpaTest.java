@@ -10,7 +10,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
  * Created by Valk on 11.10.15.
  */
 @ActiveProfiles({Profiles.HSQLDB, Profiles.JPA})
-public class UserServiceTest_Hsqldb_Jpa extends UserServiceTest {
+public class UserServiceHsqldbJpaTest extends UserServiceTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
