@@ -84,4 +84,11 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository {
         if (!meals.isEmpty()) meals.iterator().next().getUser().getId(); //весь список не нужен - юзер один на всех
         return meals;
     }
+
+    @Override
+    public UserMeal getWithUser(int id, int userId) {
+        UserMeal meal = get(id, userId);
+        if (meal != null) meal.getUser().getId();
+        return meal;
+    }
 }

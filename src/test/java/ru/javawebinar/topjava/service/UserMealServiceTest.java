@@ -118,9 +118,22 @@ public abstract class UserMealServiceTest {
                 service.getBetweenDates(LocalDate.of(2015, Month.MAY, 30), LocalDate.of(2015, Month.MAY, 30), USER_ID));
     }
 
-    //Тестируем доставание вместе с едой
+    //Тестируем доставание списка вместе с юзером
     @Test
     public void testGetAllWithUser() throws Exception {
         MATCHER.assertCollectionEquals(USER_MEALS_DEEP, service.getAllWithUser(USER_ID));
+    }
+
+    //Тестируем доставание еды вместе с юзером
+    @Test
+    public void testGetWithUser() throws Exception {
+        MATCHER.assertEquals(MEAL1_DEEP, service.getWithUser(MEAL1_ID, USER_ID));
+    }
+
+    //Тестируем попытку доставание чужой еды вместе с юзером
+    @Test
+    public void testGetWithUserNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
+        MATCHER.assertEquals(MEAL1_DEEP, service.getWithUser(MEAL1_ID, ADMIN_ID));
     }
 }

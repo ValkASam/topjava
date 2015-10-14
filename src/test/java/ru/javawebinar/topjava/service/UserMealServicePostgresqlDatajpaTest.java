@@ -52,4 +52,19 @@ public class UserMealServicePostgresqlDatajpaTest extends UserMealServiceTest {
     public void testGetBetween() throws Exception {
         super.testGetBetween();
     }
+
+    @Override
+    public void testGetAllWithUser() throws Exception {
+        super.testGetAllWithUser();
+    }
+
+    @Override
+    public void testGetWithUser() throws Exception {
+        super.testGetWithUser();
+    }
+
+    @Override
+    public void testGetWithUserNotFound() throws Exception {
+        super.testGetWithUserNotFound();
+    }
 }

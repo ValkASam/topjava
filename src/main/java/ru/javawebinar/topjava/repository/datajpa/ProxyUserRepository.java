@@ -24,7 +24,6 @@ public interface ProxyUserRepository extends JpaRepository<User, Integer> {
     @Transactional
     @Modifying
     @Query(name = User.DELETE)
-    //@Query("DELETE FROM User u WHERE u.id=:id")
     int delete(@Param("id") int id);
 
     @Override
@@ -39,22 +38,30 @@ public interface ProxyUserRepository extends JpaRepository<User, Integer> {
 
     User getByEmail(String email);
 
+    @Query("SELECT DISTINCT(u) FROM User u JOIN FETCH u.meals ORDER BY u.name, u.email")
+    public List<User> getAllWithMeals();
 
-    /*реализовано в интерфейсе, чтобы оставаться в контексте текущей Session, что необходимо для
-    возможности дергать ленивый прокси-объект*/
+    /*
+    Вариант: без @Query
+    реализовано в интерфейсе, чтобы оставаться в контексте текущей Session, что необходимо для
+    возможности дергать ленивый прокси-объект*//*
     default public Collection<User> getAllWithMeals() {
         List<User> users = findAll(SORT_NAME_EMAIL);
         users.forEach(u -> u.getMeals().size());
         return users;
-    }
+    }*/
 
-    /*реализовано в интерфейсе, чтобы оставаться в контексте текущей Session, что необходимо для
+    @Query("SELECT DISTINCT(u) FROM User u JOIN FETCH u.meals WHERE u.id = ?1")
+    public User getWithMeals(int id);
+
+    /*Вариант: без @Query
+    реализовано в интерфейсе, чтобы оставаться в контексте текущей Session, что необходимо для
     возможности дергать ленивый прокси-объект*/
-    default public User getWithMeals(int id) {
+    /*default public User getWithMeals(int id) {
         User user = findOne(id);
         user.getMeals().size();
         return user;
-    }
+    }*/
 
     @Modifying
     @Transactional

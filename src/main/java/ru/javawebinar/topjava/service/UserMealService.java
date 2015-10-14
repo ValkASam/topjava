@@ -33,4 +33,6 @@ public interface UserMealService {
     //Map<User, Collection<UserMeal>> getAllWithUser(int userId);
 
     Collection<UserMeal> getAllWithUser(int userId);
+
+    UserMeal getWithUser(int id, int userId);
 }

@@ -60,4 +60,14 @@ public class UserMealServiceHsqldbMemoryJpaTest extends UserMealServiceTest {
     public void testGetAllWithUser() throws Exception {
         super.testGetAllWithUser();
     }
+
+    @Override
+    public void testGetWithUser() throws Exception {
+        super.testGetWithUser();
+    }
+
+    @Override
+    public void testGetWithUserNotFound() throws Exception {
+        super.testGetWithUserNotFound();
+    }
 }

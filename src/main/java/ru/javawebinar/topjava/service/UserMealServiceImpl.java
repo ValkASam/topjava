@@ -55,4 +55,9 @@ public class UserMealServiceImpl implements UserMealService {
     public Collection<UserMeal> getAllWithUser(int userId) {
         return repository.getAllWithUser(userId);
     }
+
+    @Override
+    public UserMeal getWithUser(int id, int userId) {
+        return ExceptionUtil.check(repository.getWithUser(id, userId), id);
+    }
 }

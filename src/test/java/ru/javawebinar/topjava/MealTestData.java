@@ -40,6 +40,7 @@ public class MealTestData {
     public static final List<UserMeal> USER_MEALS = Arrays.asList(MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
     public static final List<UserMeal> ADMIN_MEALS = Arrays.asList(ADMIN_MEAL2, ADMIN_MEAL);
 
+    public static final UserMeal MEAL1_DEEP = addUser(MEAL1);
     public static final List<UserMeal> USER_MEALS_DEEP = USER_MEALS
             .stream()
             .map(MealTestData::addUser)

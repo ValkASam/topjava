@@ -31,7 +31,8 @@ public interface ProxyUserMealRepository extends JpaRepository<UserMeal, Integer
     @Transactional
     @Query(name = UserMeal.DELETE)
     int delete(@Param("id")Integer id, @Param("userId")Integer userId);
-    /*альтернатива @Transactional
+    /*альтернатива
+    @Transactional
     Integer deleteByIdAndUser_id(Integer id, Integer userId);*/
 
     @Query(name = UserMeal.ALL_SORTED)
@@ -45,12 +46,19 @@ public interface ProxyUserMealRepository extends JpaRepository<UserMeal, Integer
                                   @Param("userId")Integer userId);
 
 
-
+    @Query("SELECT um FROM UserMeal um JOIN FETCH um.user u WHERE u.id = :user_id ORDER BY um.dateTime DESC")
+    public List<UserMeal> getAllWithUser(@Param("user_id")int userId);
+    /*
+    Вариант: без @Query
     //реализация в интерфейсе, чтобы оставаться в контексте текущей Session, что необходимо для
     //возможности дергать ленивый прокси-объект
     default public Collection<UserMeal> getAllWithUser(int userId) {
         List<UserMeal> meals = findAll(userId);
         if (!meals.isEmpty()) meals.iterator().next().getUser().getId(); //весь список не нужен - юзер один на всех
         return meals;
-    }
+    }*/
+
+    @Query("SELECT um FROM UserMeal um JOIN FETCH um.user u WHERE u.id = :user_id AND um.id=:id ORDER BY um.dateTime DESC")
+    public UserMeal getByIdWithUser(@Param("id")int id, @Param("user_id")int userId);
+
 }

@@ -83,6 +83,7 @@ public class JdbcUserMealRepositoryImpl implements UserMealRepository {
                 "SELECT * FROM meals WHERE id = ? AND user_id = ?", ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(userMeals);
     }
+
     public List<UserMeal> getAll(int userId) {
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId);
@@ -96,12 +97,22 @@ public class JdbcUserMealRepositoryImpl implements UserMealRepository {
     }
 
     @Override
-    public Collection<UserMeal> getAllWithUser(int userId) {
+    public List<UserMeal> getAllWithUser(int userId) {
         List<UserMeal> meals = getAll(userId);
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", USER_ROW_MAPPER, userId);
         User user = DataAccessUtils.singleResult(users);
         user.setMeals(meals);
-        meals.forEach(m->m.setUser(user));
+        meals.forEach(m -> m.setUser(user));
         return meals;
+    }
+
+    @Override
+    public UserMeal getWithUser(int id, int userId) {
+        List<UserMeal> meals = getAllWithUser(userId);
+        return meals.isEmpty() ? null : meals
+                .stream()
+                .filter(m -> m.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 }

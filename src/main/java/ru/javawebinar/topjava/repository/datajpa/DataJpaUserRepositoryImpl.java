@@ -63,14 +63,14 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
     Дополнительно в комментах для UserServiceTest_Hsqldb_Datajpa.testUpdate()
      */
     @Override
-    public User updateLazy(User user){
+    public User updateLazy(User user) {
         if (proxy.save(user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getPassword(),
                 user.isEnabled(),
                 user.getRegistered(),
-                user.getCaloriesPerDay()) ==0) return null;
+                user.getCaloriesPerDay()) == 0) return null;
         return user;
     }
 }

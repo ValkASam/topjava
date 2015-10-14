@@ -88,4 +88,9 @@ public class InMemoryUserMealRepositoryImpl implements UserMealRepository {
     public Collection<UserMeal> getAllWithUser(int userId) {
         return null;
     }
+
+    @Override
+    public UserMeal getWithUser(int id, int userId) {
+        return null;
+    }
 }

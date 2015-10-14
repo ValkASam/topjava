@@ -31,4 +31,6 @@ public interface UserMealRepository {
     // ORDERED DATE, TIME
     public Collection<UserMeal> getAllWithUser(int userId);
 
+    public UserMeal getWithUser(int id, int userId);
+
 }
