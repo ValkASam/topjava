@@ -5,12 +5,11 @@
 <html>
 <head>
     <jsp:include page="fragments/headTag.jsp"/>
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
-    <h2><a href="index.jsp"><fmt:message key="app.home"/></a></h2>
+    <h2><a href="index"><fmt:message key="app.home"/></a></h2>
     <h3><fmt:message key="app.meals-title"/></h3>
     <form method="post" action="meals?action=filter">
         <dl>
@@ -37,9 +36,9 @@
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Calories</th>
+            <th><fmt:message key="app.date-title"/></th>
+            <th><fmt:message key="app.description-title"/></th>
+            <th><fmt:message key="app.calories-title"/></th>
             <th></th>
             <th></th>
         </tr>

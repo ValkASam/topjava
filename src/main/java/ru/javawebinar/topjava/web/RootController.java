@@ -54,6 +54,12 @@ public class RootController {
         return "redirect:meals";
     }
 
+    /*=======================for index ============================*/
+    @RequestMapping(value = "/index")
+    public void index() {
+        MEAL_LOG.info("back home");
+        root();
+    }
     /*=======================for meals ============================*/
     @RequestMapping(value = "/meals", method = RequestMethod.GET)
     public ModelAndView getMealList() {
