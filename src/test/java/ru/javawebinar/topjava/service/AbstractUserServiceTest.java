@@ -10,9 +10,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 import static ru.javawebinar.topjava.UserTestData.*;
 
@@ -32,7 +30,10 @@ abstract public class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void testSave() throws Exception {
-        TestUser tu = new TestUser(null, "New", "new@gmail.com", "newPass", 1555, false, Collections.singleton(Role.ROLE_USER));
+        //TestUser tu = new TestUser(null, "New", "new@gmail.com", "newPass", 1555, false, Collections.singleton(Role.ROLE_USER));
+        Set<Role> set = new HashSet<>();
+        set.addAll(Arrays.asList(Role.ROLE_USER, Role.ROLE_ADMIN));
+        TestUser tu = new TestUser(null, "New", "new@gmail.com", "newPass", 1555, false, set);
         User created = service.save(tu.asUser());
         tu.setId(created.getId());
         MATCHER.assertCollectionEquals(Arrays.asList(ADMIN, tu, USER), service.getAll());
