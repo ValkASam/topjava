@@ -58,6 +58,8 @@
             </tr>
         </c:forEach>
     </table>
+    <a href="meals?lang=ru">RU</a>
+    <a href="meals?lang=en">EN</a>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

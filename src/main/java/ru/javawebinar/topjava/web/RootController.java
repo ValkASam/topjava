@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import ru.javawebinar.topjava.LoggedUser;
 import ru.javawebinar.topjava.LoggerWrapper;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -32,6 +34,9 @@ public class RootController {
 
     @Autowired
     private UserMealRestController mealController;
+
+    @Autowired (required = false)
+    private LocaleResolver localeResolver;
 
     @Autowired
     private UserService service;
@@ -62,8 +67,14 @@ public class RootController {
     }
     /*=======================for meals ============================*/
     @RequestMapping(value = "/meals", method = RequestMethod.GET)
-    public ModelAndView getMealList() {
+    public ModelAndView getMealList(@RequestParam(value = "lang", required = false) String lang,
+                                    HttpServletRequest request,
+                                    HttpServletResponse response) {
         MEAL_LOG.info("getAll");
+        if (lang != null) {
+            Locale locale = new Locale(lang);
+            localeResolver.setLocale(request, response, locale);
+        }
         ModelAndView modelAndView = new ModelAndView("mealList");
         modelAndView.addObject("mealList", mealController.getAll());
         return modelAndView;
