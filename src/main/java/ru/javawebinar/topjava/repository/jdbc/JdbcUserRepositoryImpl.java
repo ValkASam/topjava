@@ -46,10 +46,10 @@ public class JdbcUserRepositoryImpl implements UserRepository {
                         rs.getBoolean("enabled"),
                         new HashSet<Role>((Collection<Role>)
                                 Arrays.asList(
-                                        (String[])rs.getArray("roles").getArray()
+                                        (Object[])rs.getArray("roles").getArray()
                                 )
                                         .stream()
-                                        .map(Role::valueOf)
+                                        .map(r->Role.valueOf((String)r))
                                         .collect(Collectors.toList())));
 
     @Autowired
