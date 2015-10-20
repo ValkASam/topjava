@@ -35,8 +35,18 @@ public class RootController {
     @Autowired
     private UserMealRestController mealController;
 
+    /*
+    есть вариант перехвата запросов на предмет проверки параметра, определяющего язык:
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="language" />  //тут можем указать любое значение параметра
+        </bean>
+    </mvc:interceptors>
+    (по факту сделано немного иначе - см spring-mvc.xml)
+    ===================
     @Autowired (required = false)
     private LocaleResolver localeResolver;
+    */
 
     @Autowired
     private UserService service;
@@ -67,16 +77,23 @@ public class RootController {
     }
     /*=======================for meals ============================*/
     @RequestMapping(value = "/meals", method = RequestMethod.GET)
-    public ModelAndView getMealList(@RequestParam(value = "lang", required = false) String lang,
+    public ModelAndView getMealList(HttpServletRequest request) {
+        /*можно использовать перехватчик
+        <mvc:interceptors>
+        вместо
+        public ModelAndView getMealList(@RequestParam(value = "language", required = false) String lang,
                                     HttpServletRequest request,
-                                    HttpServletResponse response) {
-        MEAL_LOG.info("getAll");
+                                    HttpServletResponse response)
         if (lang != null) {
             Locale locale = new Locale(lang);
             localeResolver.setLocale(request, response, locale);
         }
+        */
+        MEAL_LOG.info("getAll");
         ModelAndView modelAndView = new ModelAndView("mealList");
         modelAndView.addObject("mealList", mealController.getAll());
+        modelAndView.addObject("selectedLanguage", request.getParameter("language"));
+        modelAndView.addObject("factLanguage", request.getAttribute("language"));
         return modelAndView;
     }
 

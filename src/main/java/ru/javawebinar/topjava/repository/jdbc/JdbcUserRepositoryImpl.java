@@ -26,6 +26,7 @@ import ru.javawebinar.topjava.repository.UserRepository;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * User: gkislin
@@ -35,10 +36,21 @@ import java.util.*;
 @Repository
 public class JdbcUserRepositoryImpl implements UserRepository {
 
-    private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
-    //private static final BeanPropertyRowMapper<Role> ROLE_ROW_MAPPER = BeanPropertyRowMapper.newInstance(Role.class);
-    private static final RowMapper<Role> ROLE_ROW_MAPPER =
-            (rs, rowNum) -> Role.valueOf(rs.getString("role"));
+    //private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
+    private static final RowMapper<User> DEEP_ROW_MAPPER =
+            (rs, rowNum) -> new User(rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getInt("calories_per_day"),
+                        rs.getBoolean("enabled"),
+                        new HashSet<Role>((Collection<Role>)
+                                Arrays.asList(
+                                        (String[])rs.getArray("roles").getArray()
+                                )
+                                        .stream()
+                                        .map(Role::valueOf)
+                                        .collect(Collectors.toList())));
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -78,34 +90,50 @@ public class JdbcUserRepositoryImpl implements UserRepository {
             try {
                 Number newKey = insertUser.executeAndReturnKey(map);
                 user.setId(newKey.intValue());
-                List<MapSqlParameterSource> roleMapList = new ArrayList<>();
-                user.getRoles().forEach(r -> roleMapList.add(
-                        new MapSqlParameterSource()
-                                .addValue("user_id", user.getId()) //user.getId() + 100 - проверка отката транзакции
-                                .addValue("role", r.name())));
-                //int d = 1 / 0; //проверка отката транзакции
-                int batchSize = user.getRoles().size();
-                int[] res = insertRoles.executeBatch(
-                        roleMapList.toArray(
-                                new MapSqlParameterSource[batchSize]
-                        )
-                );
-                //res[1] = 0; //проверка отката транзакции
-                Arrays.sort(res);
-                if (Arrays.binarySearch(res, 0) >= 0) {
-                    throw new Exception("Ошибка сохранения: не удалось сохранить роли");
-                }
+                saveRole(user, false);
                 transactionManager.commit(txStatus);
             } catch (Exception e) {
                 transactionManager.rollback(txStatus);
                 throw new DataIntegrityViolationException(e.getMessage());
             }
         } else {
-            namedParameterJdbcTemplate.update(
-                    "UPDATE users SET name=:name, email=:email, password=:password, " +
-                            "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", map);
+            TransactionDefinition txDef = new DefaultTransactionDefinition();
+            TransactionStatus txStatus = transactionManager.getTransaction(txDef);
+            try {
+                namedParameterJdbcTemplate.update(
+                        "UPDATE users SET name=:name, email=:email, password=:password, " +
+                                "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", map);
+                saveRole(user, true);
+                transactionManager.commit(txStatus);
+            } catch (Exception e) {
+                transactionManager.rollback(txStatus);
+                throw new DataIntegrityViolationException(e.getMessage());
+            }
         }
         return user;
+    }
+
+    private void saveRole(User user, boolean rewrite) throws Exception {
+        if (rewrite) {
+            jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+        }
+        List<MapSqlParameterSource> roleMapList = new ArrayList<>();
+        user.getRoles().forEach(r -> roleMapList.add(
+                new MapSqlParameterSource()
+                        .addValue("user_id", user.getId()) //user.getId() + 100 - проверка отката транзакции
+                        .addValue("role", r.name())));
+        //int d = 1 / 0; //проверка отката транзакции
+        int batchSize = user.getRoles().size();
+        int[] res = insertRoles.executeBatch(
+                roleMapList.toArray(
+                        new MapSqlParameterSource[batchSize]
+                )
+        );
+        //res[1] = 0; //проверка отката транзакции
+        Arrays.sort(res);
+        if (Arrays.binarySearch(res, 0) >= 0) {
+            throw new Exception("Ошибка сохранения: не удалось сохранить роли");
+        }
     }
 
     @Override
@@ -116,28 +144,40 @@ public class JdbcUserRepositoryImpl implements UserRepository {
 
     @Override
     public User get(int id) {
+        /*вариант раздельной выборки; user - roles
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
         users.forEach(u -> u.setRoles(fetchRoles(u.getId())));
+        */
+        List<User> users = jdbcTemplate.query("SELECT u.*, ARRAY(" +
+                " SELECT ur.role FROM user_roles ur WHERE ur.user_id=u.id) AS roles " +
+                " FROM users u WHERE id=?", DEEP_ROW_MAPPER, id);
         return DataAccessUtils.singleResult(users);
     }
 
     @Override
     public User getByEmail(String email) {
-        User user = jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        user.setRoles(fetchRoles(user.getId()));
-        return user;
+        List<User> users = jdbcTemplate.query("SELECT u.*, ARRAY(" +
+                " SELECT ur.role FROM user_roles ur WHERE ur.user_id=u.id) AS roles " +
+                " FROM users u WHERE email=?", DEEP_ROW_MAPPER, email);
+        return DataAccessUtils.singleResult(users);
     }
 
     @Override
     public List<User> getAll() {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
-        users.forEach(u -> u.setRoles(fetchRoles(u.getId())));
+        List<User> users = jdbcTemplate.query("SELECT u.*, ARRAY(" +
+                " SELECT ur.role FROM user_roles ur WHERE ur.user_id=u.id) AS roles " +
+                " FROM users u ORDER BY name, email", DEEP_ROW_MAPPER);
         return users;
     }
 
+    /*для вариант раздельной выборки; user - roles
+
+    private static final RowMapper<Role> ROLE_ROW_MAPPER =
+            (rs, rowNum) -> Role.valueOf(rs.getString("role"));
     private Set<Role> fetchRoles(Integer userId) {
         return new HashSet<Role>() {{
             addAll(jdbcTemplate.query("SELECT * FROM user_roles WHERE user_id=?", ROLE_ROW_MAPPER, userId));
         }};
     }
+    */
 }

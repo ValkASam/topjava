@@ -10,7 +10,9 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <h2><a href="index"><fmt:message key="app.home"/></a></h2>
+
     <h3><fmt:message key="app.meals-title"/></h3>
+
     <form method="post" action="meals?action=filter">
         <dl>
             <dt><fmt:message key="app.from-date"/></dt>
@@ -47,8 +49,8 @@
             <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.to.UserMealWithExceed"/>
             <tr class="${meal.exceed ? 'exceeded' : 'normal'}">
                 <td>
-                   <%--<fmt:parseDate value="${meal.dateTime}" pattern="y-M-dd'T'H:m" var="parsedDate"/>--%>
-                   <%--<fmt:formatDate value="${parsedDate}" pattern="yyyy.MM.dd HH:mm" />--%>
+                        <%--<fmt:parseDate value="${meal.dateTime}" pattern="y-M-dd'T'H:m" var="parsedDate"/>--%>
+                        <%--<fmt:formatDate value="${parsedDate}" pattern="yyyy.MM.dd HH:mm" />--%>
                     <%=TimeUtil.toString(meal.getDateTime())%>
                 </td>
                 <td>${meal.description}</td>
@@ -58,8 +60,14 @@
             </tr>
         </c:forEach>
     </table>
-    <a href="meals?lang=ru">RU</a>
-    <a href="meals?lang=en">EN</a>
+    <a href="meals?language=ru">RU</a>
+    <a href="meals?language=en">EN</a>
+    <a href="meals?language=cz">CZ</a>
+
+    <div>
+        <p>выбранный язык: ${selectedLanguage}</p>
+        <p>установленный язык: ${factLanguage}</p>
+    </div>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

@@ -84,6 +84,9 @@ abstract public class AbstractUserServiceTest extends AbstractServiceTest {
         TestUser updated = new TestUser(USER);
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
+        Set<Role> roles = new HashSet<Role>((Collection)Arrays.asList(updated.getRoles().toArray()));
+        roles.remove(Role.ROLE_USER);
+        updated.setRoles(roles);
         service.update(updated.asUser());
         MATCHER.assertEquals(updated, service.get(USER_ID));
     }
