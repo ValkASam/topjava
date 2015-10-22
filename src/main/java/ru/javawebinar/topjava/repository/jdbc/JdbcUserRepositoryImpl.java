@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -25,6 +26,8 @@ import ru.javawebinar.topjava.repository.UserRepository;
 
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -164,10 +167,43 @@ public class JdbcUserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> getAll() {
+        /*
+        Вариант DEEP_ROW_MAPPER + SELECT ... ARRAY
         List<User> users = jdbcTemplate.query("SELECT u.*, ARRAY(" +
                 " SELECT ur.role FROM user_roles ur WHERE ur.user_id=u.id) AS roles " +
                 " FROM users u ORDER BY name, email", DEEP_ROW_MAPPER);
-        return users;
+                */
+        //Вариант без маппера + "традиционный" запрос с JOIN
+        return jdbcTemplate.query("SELECT u.*, ur.role AS role " +
+                " FROM users u" +
+                " JOIN user_roles ur ON ur.user_id=u.id" +
+                " ORDER BY name, email", new ResultSetExtractor<List<User>>() {
+            @Override
+            public List<User> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                List<User> result = new ArrayList<User>();
+                String currentUser = "@@@@";
+                while (rs.next()){
+                    if (! currentUser.equals(rs.getString("email"))) {  //в данном контексте можем использовать email - т.к. это аьтернативный ключ
+                        result.add(new User(rs.getInt("id"),
+                                        rs.getString("name"),
+                                        rs.getString("email"),
+                                        rs.getString("password"),
+                                        rs.getInt("calories_per_day"),
+                                        rs.getBoolean("enabled"),
+                                        new HashSet<Role>(){{
+                                            add(Role.valueOf(rs.getString("role")));
+                                        }})
+                        );
+                        currentUser = rs.getString("email");
+                    }
+                    else {
+                        result.get(result.size()-1)
+                                .getRoles().add(Role.valueOf(rs.getString("role")));
+                    }
+                }
+                return result;
+            }
+        });
     }
 
     /*для вариант раздельной выборки; user - roles
