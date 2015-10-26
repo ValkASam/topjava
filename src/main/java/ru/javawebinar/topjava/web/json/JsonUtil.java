@@ -18,7 +18,7 @@ public class JsonUtil {
     private static final LoggerWrapper LOG = LoggerWrapper.get(JsonUtil.class);
 
     public static <T> List<T> readValues(String json, Class<T> clazz) {
-        ObjectReader reader = getMapper().reader(clazz);
+        ObjectReader reader = getMapper().readerFor(clazz);
         try {
             return reader.<T>readValues(json).readAll();
         } catch (IOException e) {

@@ -1,11 +1,16 @@
 package ru.javawebinar.topjava.to;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 
 /**
  * GKislin
  * 11.01.2015.
  */
+//варианты отключения сериализации поля + к
+//@JsonIgnoreProperties(value = { "exceed" })
+//@JsonFilter("filterUserMealWith")
 public class UserMealWithExceed {
     protected final Integer id;
 
@@ -15,6 +20,7 @@ public class UserMealWithExceed {
 
     protected final int calories;
 
+    @JsonIgnore
     protected final boolean exceed;
 
     public UserMealWithExceed(LocalDateTime dateTime, String description, int calories, boolean exceed) {
@@ -58,5 +64,30 @@ public class UserMealWithExceed {
                 ", calories=" + calories +
                 ", exceed=" + exceed +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserMealWithExceed that = (UserMealWithExceed) o;
+
+        if (calories != that.calories) return false;
+        if (exceed != that.exceed) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (dateTime != null ? !dateTime.equals(that.dateTime) : that.dateTime != null) return false;
+        return !(description != null ? !description.equals(that.description) : that.description != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (dateTime != null ? dateTime.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + calories;
+        result = 31 * result + (exceed ? 1 : 0);
+        return result;
     }
 }
