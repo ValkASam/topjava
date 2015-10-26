@@ -46,10 +46,4 @@ public class TimeUtil {
         return StringUtils.isEmpty(str) ? LocalDateTime.now() : LocalDateTime.parse(str, formatter);
     }
 
-    public static class LocalDateTimeConverter implements Converter<LocalDateTime, String >{
-        @Override
-        public String convert(LocalDateTime source) {
-            return "1111111111";
-        }
-    }
 }
