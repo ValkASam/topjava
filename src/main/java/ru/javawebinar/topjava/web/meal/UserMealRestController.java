@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.web.meal;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -58,14 +60,18 @@ public class UserMealRestController extends AbstractUserMealController {
     }
 
     @RequestMapping(value = "/filter", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserMealWithExceed> getBetween(@RequestParam("startDate") String startDate,
-                                               @RequestParam("startTime") String startTime,
-                                               @RequestParam("endDate") String endDate,
-                                               @RequestParam("endTime") String endTime) {
+    /*public List<UserMealWithExceed> getBetween(@RequestParam("startDate") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                               @RequestParam("startTime") @DateTimeFormat(iso= DateTimeFormat.ISO.TIME)  LocalTime startTime,
+                                               @RequestParam("endDate") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)  LocalDate endDate,
+                                               @RequestParam("endTime") @DateTimeFormat(iso= DateTimeFormat.ISO.TIME) LocalTime endTime) {*/
+    public List<UserMealWithExceed> getBetween(@RequestParam(value = "startDate", required = false) LocalDate startDate,
+                                               @RequestParam(value = "startTime", required = false) LocalTime startTime,
+                                               @RequestParam(value = "endDate", required = false) LocalDate endDate,
+                                               @RequestParam(value = "endTime", required = false) LocalTime endTime) {
         return super.getBetween(
-                TimeUtil.parseLocalDate(startDate, TimeUtil.MIN_DATE),
-                TimeUtil.parseLocalTime(startTime, LocalTime.MIN),
-                TimeUtil.parseLocalDate(endDate, TimeUtil.MIN_DATE),
-                TimeUtil.parseLocalTime(endTime, LocalTime.MIN));
+                startDate == null ? TimeUtil.MIN_DATE : startDate,
+                startTime == null ? LocalTime.MIN : startTime,
+                endDate == null ? TimeUtil.MAX_DATE : endDate,
+                endTime == null ? LocalTime.MAX : endTime);
     }
 }

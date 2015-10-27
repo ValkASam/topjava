@@ -106,6 +106,15 @@ public class UserMealRestControllerTest extends AbstractControllerTest {
                 .andExpect(MATCHER.contentListMatcher(Arrays.asList(MEAL3, MEAL2, MEAL1)));
     }
 
+    @Test
+    public void testUserMealRestFilterWithNotDifinedParameters() throws Exception {
+        mockMvc.perform(get(REST_URL + "/filter"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MATCHER.contentListMatcher(USER_MEALS));
+    }
+
 }
 
 

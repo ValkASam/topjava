@@ -1,12 +1,16 @@
 package ru.javawebinar.topjava.util;
 
+import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * GKislin
@@ -44,6 +48,20 @@ public class TimeUtil {
 
     public static LocalDateTime parseLocalDateTime(String str, DateTimeFormatter formatter) {
         return StringUtils.isEmpty(str) ? LocalDateTime.now() : LocalDateTime.parse(str, formatter);
+    }
+
+    public static class LocalDateConverter implements Converter<String, LocalDate>{
+        @Override
+        public LocalDate convert(String str) {
+            return StringUtils.isEmpty(str) ? null : LocalDate.parse(str);
+        }
+    }
+
+    public static class LocalTimeConverter implements Converter<String, LocalTime>{
+        @Override
+        public LocalTime convert(String str) {
+            return StringUtils.isEmpty(str) ? null : LocalTime.parse(str);
+        }
     }
 
 }
