@@ -1,12 +1,18 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.javawebinar.topjava.LoggedUser;
 import ru.javawebinar.topjava.model.UserMeal;
+import ru.javawebinar.topjava.to.UserMealWithExceed;
+import ru.javawebinar.topjava.util.UserMealsUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
+import ru.javawebinar.topjava.web.json.JacksonObjectMapper;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.time.LocalDate;
@@ -40,11 +46,37 @@ public class UserMealRestControllerTest extends AbstractControllerTest {
 
     @Test
     public void testUserMealRestGetAll() throws Exception {
+        /*
+        Вариант добавить конструктор без параметров в UserMealWithExceed и сериализировать его
+        */
+        MvcResult mvcResult = mockMvc.perform(get(REST_URL))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+        List<UserMealWithExceed> actual = Arrays.asList(JacksonObjectMapper.getMapper().readValue(mvcResult.getResponse().getContentAsString(), UserMealWithExceed[].class));
+        List<UserMealWithExceed> expected = UserMealsUtil.getWithExceeded(USER_MEALS, LoggedUser.getCaloriesPerDay());
+        Assert.assertEquals(expected, actual);
+        /*
+        Вариант сделать переменную матчера типизированную UserMealWithExceed
+        @JsonIgnore
+        protected final boolean exceed;
         mockMvc.perform(get(REST_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MATCHER.contentListMatcher(USER_MEALS));
+                .andExpect(MATCHER_WITH_EXCEED.contentListMatcher(UserMealsUtil.getWithExceeded(USER_MEALS, LoggedUser.getCaloriesPerDay())));
+         */
+        /*
+        Вариант отключить "лишнее" поле из сериализации
+        @JsonIgnore
+        protected final boolean exceed;
+
+        mockMvc.perform(get(REST_URL))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MATCHER.contentListMatcher(USER_MEALS));*/
     }
 
     @Test
@@ -58,7 +90,7 @@ public class UserMealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MATCHER.contentListMatcher(modifiedMealList));
+                .andExpect(MATCHER_WITH_EXCEED.contentListMatcher(UserMealsUtil.getWithExceeded(modifiedMealList, LoggedUser.getCaloriesPerDay())));
     }
 
     @Test
@@ -103,7 +135,7 @@ public class UserMealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MATCHER.contentListMatcher(Arrays.asList(MEAL3, MEAL2, MEAL1)));
+                .andExpect(MATCHER_WITH_EXCEED.contentListMatcher(UserMealsUtil.getWithExceeded(Arrays.asList(MEAL3, MEAL2, MEAL1), LoggedUser.getCaloriesPerDay())));
     }
 
     @Test
@@ -112,10 +144,18 @@ public class UserMealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MATCHER.contentListMatcher(USER_MEALS));
+                .andExpect(MATCHER_WITH_EXCEED.contentListMatcher(UserMealsUtil.getWithExceeded(USER_MEALS, LoggedUser.getCaloriesPerDay())));
     }
 
 }
+
+/*
+* привет. Есть такой "организационный" вопрос.
+Из репозитория контроллер получает UserMealWithExceed, соответсвенно, просто подставить ег под матчер мы не можем. Я сделал конвертацию эталонного  с помощью UserMealsUtil*/
+/*
+* JacksonObjectMapper.MAPPER.readValue(mvcResult.getResponse().getContentAsString(), UserMealWithExceed.class)
+*
+* */
 
 
 
