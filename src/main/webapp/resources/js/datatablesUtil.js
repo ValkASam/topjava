@@ -1,12 +1,11 @@
 function makeEditable() {
-
     $('#add').click(function () {
         $('#id').val(0);
         $('#editRow').modal();
     });
 
     $('.delete').click(function () {
-        deleteRow($(this).attr("id"));
+        deleteRow($(this).parentsUntil("tr").parent().attr("id"));
     });
 
     $('#detailsForm').submit(function () {
@@ -16,6 +15,38 @@ function makeEditable() {
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(event, jqXHR, options, jsExc);
+    });
+
+    $("input[type=checkbox]").change(function () {
+        var id = $(this).parentsUntil("tr").parent().attr("id");
+        var currCheckBox = $("input[id=" + id + "]");
+        var newActive = !currCheckBox.attr("checked");
+        var user;
+        $.ajax({
+            type: "GET",
+            url: ajaxUrl + id,
+            async: false,
+            success: function (data) {
+                user = {
+                    "id": data.id,
+                    "name": data.name,
+                    "email": data.email,
+                    "password": data.password,
+                    "registered": new Date(data.registered),
+                    "enabled": newActive,
+                    "caloriesPerDay": data.caloriesPerDay
+                };
+            }
+        });
+        $.ajax({
+            type: "POST",
+            url: ajaxUrl,
+            data: user,
+            success: function () {
+                updateTable();
+                successNoty('Saved');
+            }
+        });
     });
 }
 
@@ -34,6 +65,7 @@ function updateTable() {
     $.get(ajaxUrl, function (data) {
         oTable_datatable.fnClearTable();
         $.each(data, function (key, item) {
+            item.registered = new Date(item.registered); //с форматированием не заморачивался - нужен плагин
             oTable_datatable.fnAddData(item);
         });
         oTable_datatable.fnDraw();

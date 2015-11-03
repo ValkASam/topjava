@@ -5,11 +5,11 @@ function makeEditable() {
     });
 
     $('.delete').click(function () {
-        deleteRow($(this).attr("id"));
+        deleteRow($(this).parentsUntil("tr").parent().attr("id"));
     });
 
     $('.edit').click(function () {
-        fillEditMealForm($(this).attr("id"));
+        fillEditMealForm($(this).parentsUntil("tr").parent().attr("id"));
     });
 }
 
@@ -37,19 +37,9 @@ function deleteRow(id) {
         url: ajaxUrl + id,
         type: 'DELETE',
         success: function () {
-            updateTable();
+            updateTable(true);
             successNoty('Deleted');
         }
-    });
-}
-
-function updateTable() {
-    $.get(ajaxUrl, function (data) {
-        oTable_datatable.fnClearTable();
-        $.each(data, function (key, item) {
-            oTable_datatable.fnAddData(item, false);
-        });
-        oTable_datatable.fnDraw();
     });
 }
 
@@ -60,7 +50,7 @@ function create(form) {
         url: ajaxUrl,
         data: JSON.stringify($(form).serializeJSON()),
         success: function () {
-            updateTable();
+            updateTable(false);
             successNoty('Saved');
         }
     });
@@ -70,11 +60,30 @@ function save(form, id) {
     $.ajax({
         type: "PUT",
         contentType: "application/json",
-        url: ajaxUrl+id,
+        url: ajaxUrl + id,
         data: JSON.stringify($(form).serializeJSON()),
         success: function () {
-            updateTable();
+            updateTable(true);
             successNoty('Saved');
+        }
+    });
+}
+
+function updateTable(filter) {
+    if (!filter){
+        $("#filterForm input").val("");
+    }
+    $.ajax({
+        url: ajaxUrl + (filter ? "filter" : ""),
+        type: "GET",
+        data: filter ? $("#filterForm").serialize() : "",
+        success: function (data) {
+            oTable_datatable.fnClearTable();
+            $.each(data, function (key, item) {
+                oTable_datatable.fnAddData(item, false);
+            });
+            oTable_datatable.fnDraw();
+            successNoty('Loaded');
         }
     });
 }

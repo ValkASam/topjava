@@ -28,6 +28,8 @@
             <set>
                 <bean class="ru.javawebinar.topjava.util.converter.LocalTimeFormatter"/>
                 <bean class="ru.javawebinar.topjava.util.converter.LocalDateFormatter"/>
+                <!--не использую. Вместо этого преобразование в колбеке Ajax-->
+                <!--<bean class="ru.javawebinar.topjava.util.converter.DateFormatter"/>-->
             </set>
         </property>
     </bean>

@@ -16,7 +16,7 @@
                 <h3><fmt:message key="meals.title"/></h3>
 
                 <div class="view-box">
-                    <form method="post" action="meals/filter">
+                    <form id="filterForm" method="post" action="#">
                         <dl>
                             <dt>From Date:</dt>
                             <dd><input type="date" name="startDate"></dd>
@@ -36,7 +36,8 @@
                         <button type="submit">Filter</button>
                     </form>
                     <hr>
-                    <a class="btn btn-sm btn-info" id="add" data-toggle="modal" data-target="#editMealForm"><fmt:message key="meals.add"/></a>
+                    <a class="btn btn-sm btn-info" id="add" data-toggle="modal" data-target="#editMealForm"><fmt:message
+                            key="meals.add"/></a>
                     <hr>
                     <table border="1" cellpadding="8" cellspacing="0" class="table table-striped display"
                            id="datatable">
@@ -68,7 +69,6 @@
 <script type="text/javascript" src="webjars/noty/2.2.4/jquery.noty.packaged.min.js"></script>
 <script type="text/javascript" src="resources/js/datatablesMealsUtil.js"></script>
 <script type="text/javascript">
-
     var ajaxUrl = 'ajax/profile/meals/';
     var oTable_datatable;
     var oTable_datatable_params;
@@ -92,14 +92,14 @@
                 },
                 {
                     "mRender": function (data, type, row) {
-                        return '<a class="btn btn-xs btn-primary edit" id=' + row.id + ' ' +
+                        return '<a class="btn btn-xs btn-primary edit" ' +
                                 'data-toggle="modal" data-target="#editMealForm">Edit</a>';
                     },
                     "bSortable": false
                 },
                 {
                     "mRender": function (data, type, row) {
-                        return '<a class="btn btn-xs btn-danger delete" id=' + row.id + '>Delete</a>';
+                        return '<a class="btn btn-xs btn-danger delete" >Delete</a>';
                     },
                     "bSortable": false
                 }
@@ -110,12 +110,9 @@
                     "asc"
                 ]
             ],
-            "fnCreatedRow": function(nRow, aData, iDataIndex ) {
-                if (aData.exceed) {
-                    $(nRow).addClass("exceeded");
-                } else {
-                    $(nRow).addClass("normal");
-                }
+            "fnCreatedRow": function (nRow, aData, iDataIndex) {
+                $(nRow).attr("id", aData.id);
+                aData.exceed ? $(nRow).addClass("exceeded") : $(nRow).addClass("normal");
             },
             "fnDrawCallback": function () {
                 makeEditable();
@@ -123,7 +120,7 @@
         };
         oTable_datatable.dataTable(oTable_datatable_params);
         /**/
-        $('#editMealForm').submit(function (e) {
+        $('#editMealForm').submit(function () {
             try {
                 var id = $("input[id=id]").val();
                 if (id === "") {
@@ -136,6 +133,15 @@
                 alert(e);
             }
             $("#editMealForm").modal("hide");
+            return false;
+        });
+
+        $('#filterForm').submit(function () {
+            try {
+                updateTable(true);
+            } catch (e) {
+                alert(e);
+            }
             return false;
         });
 
