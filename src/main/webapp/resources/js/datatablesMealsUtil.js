@@ -3,13 +3,42 @@ function makeEditable() {
         $('#id').val(0);
         fillEditMealForm(0);
     });
-
-    $('.delete').click(function () {
-        deleteRow($(this).parentsUntil("tr").parent().attr("id"));
+    $('tbody').delegate("a", "click", function (e) {
+        if ($(this).is(".delete")) {
+            deleteRow($(this).parentsUntil("tr").parent().attr("id"));
+        }
+        if ($(this).is(".edit")) {
+            fillEditMealForm($(this).parentsUntil("tr").parent().attr("id"));
+        }
     });
 
-    $('.edit').click(function () {
-        fillEditMealForm($(this).parentsUntil("tr").parent().attr("id"));
+    $('#editMealForm').submit(function () {
+        try {
+            var id = $("input[id=id]").val();
+            if (id === "") {
+                create("#entering-form");
+            }
+            else {
+                save("#entering-form", id);
+            }
+        } catch (e) {
+            alert(e);
+        }
+        $("#editMealForm").modal("hide");
+        return false;
+    });
+
+    $('#filterForm').submit(function () {
+        try {
+            updateTable(true);
+        } catch (e) {
+            alert(e);
+        }
+        return false;
+    });
+
+    $(document).ajaxError(function (event, jqXHR, options, jsExc) {
+        failNoty(event, jqXHR, options, jsExc);
     });
 }
 
@@ -70,7 +99,7 @@ function save(form, id) {
 }
 
 function updateTable(filter) {
-    if (!filter){
+    if (!filter) {
         $("#filterForm input").val("");
     }
     $.ajax({

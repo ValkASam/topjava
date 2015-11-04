@@ -110,44 +110,26 @@
                     "asc"
                 ]
             ],
+            "fnInitComplete":function () {
+                makeEditable();
+            },
             "fnCreatedRow": function (nRow, aData, iDataIndex) {
                 $(nRow).attr("id", aData.id);
                 aData.exceed ? $(nRow).addClass("exceeded") : $(nRow).addClass("normal");
             },
             "fnDrawCallback": function () {
-                makeEditable();
+                /*
+                вместо этого лучше fnInitComplete, но при условии использования delegate() в makeEditable()
+                почему лучше:
+                - инициация будет проходить только один раз
+                - инициацию submit'ов можно внести под makeEditable() (для варианта fnDrawCallback прилось вынести, чтобы избыточно не повторять ее)
+                - наглядней
+
+                makeEditable(); //для вызова здесь важно в fnAddData(item, false) втрой параметр = false, чтобы не дергать пр отрисовке каждой строки
+                */
             }
         };
         oTable_datatable.dataTable(oTable_datatable_params);
-        /**/
-        $('#editMealForm').submit(function () {
-            try {
-                var id = $("input[id=id]").val();
-                if (id === "") {
-                    create("#entering-form");
-                }
-                else {
-                    save("#entering-form", id);
-                }
-            } catch (e) {
-                alert(e);
-            }
-            $("#editMealForm").modal("hide");
-            return false;
-        });
-
-        $('#filterForm').submit(function () {
-            try {
-                updateTable(true);
-            } catch (e) {
-                alert(e);
-            }
-            return false;
-        });
-
-        $(document).ajaxError(function (event, jqXHR, options, jsExc) {
-            failNoty(event, jqXHR, options, jsExc);
-        });
     });
 </script>
 
