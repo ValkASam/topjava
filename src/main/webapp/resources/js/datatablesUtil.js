@@ -1,4 +1,5 @@
 function makeEditable() {
+
     $('#add').click(function () {
         $('#id').val(0);
         $('#editRow').modal();
@@ -19,13 +20,11 @@ function makeEditable() {
 
     $("input[type=checkbox]").change(function () {
         var id = $(this).parentsUntil("tr").parent().attr("id");
-        var currCheckBox = $("input[id=" + id + "]");
-        var newActive = !currCheckBox.attr("checked");
+        var newActive = !$(this).attr("checked");
         var user;
         $.ajax({
             type: "GET",
             url: ajaxUrl + id,
-            async: false,
             success: function (data) {
                 user = {
                     "id": data.id,
@@ -36,15 +35,15 @@ function makeEditable() {
                     "enabled": newActive,
                     "caloriesPerDay": data.caloriesPerDay
                 };
-            }
-        });
-        $.ajax({
-            type: "POST",
-            url: ajaxUrl,
-            data: user,
-            success: function () {
-                updateTable();
-                successNoty('Saved');
+                $.ajax({
+                    type: "POST",
+                    url: ajaxUrl,
+                    data: user,
+                    success: function () {
+                        updateTable();
+                        successNoty('Saved');
+                    }
+                });
             }
         });
     });
