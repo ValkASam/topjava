@@ -30,21 +30,6 @@
                         <th></th>
                     </tr>
                     </thead>
-                    <c:forEach items="${userList}" var="user">
-                        <jsp:useBean id="user" scope="page" type="ru.javawebinar.topjava.model.User"/>
-                        <tr>
-                            <td><c:out value="${user.name}"/></td>
-                            <td><a href="mailto:${user.email}">${user.email}</a></td>
-                            <td>${user.roles}</td>
-                            <td>
-                                <input type="checkbox"
-                                       <c:if test="${user.enabled}">checked</c:if> id="${user.id}"/>
-                            </td>
-                            <td><fmt:formatDate value="${user.registered}" pattern="dd-MMMM-yyyy"/></td>
-                            <td><a class="btn btn-xs btn-primary edit" id="${user.id}">Edit</a></td>
-                            <td><a class="btn btn-xs btn-danger delete" id="${user.id}">Delete</a></td>
-                        </tr>
-                    </c:forEach>
                 </table>
             </div>
         </div>
@@ -104,53 +89,5 @@
 <script type="text/javascript" src="webjars/datatables/1.10.9/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="webjars/noty/2.2.4/jquery.noty.packaged.min.js"></script>
 <script type="text/javascript" src="resources/js/datatablesUtil.js"></script>
-<script type="text/javascript">
-
-    var ajaxUrl = 'ajax/admin/users/';
-    var oTable_datatable;
-    var oTable_datatable_params;
-
-    //            $(document).ready(function () {
-    $(function () {
-        oTable_datatable = $('#datatable');
-        oTable_datatable_params = {
-            "bPaginate": false,
-            "bInfo": false,
-            "aoColumns": [
-                {
-                    "mData": "name"
-                },
-                {
-                    "mData": "email"
-                },
-                {
-                    "mData": "roles"
-                },
-                {
-                    "mData": "enabled"
-                },
-                {
-                    "mData": "registered"
-                },
-                {
-                    "sDefaultContent": "",
-                    "bSortable": false
-                },
-                {
-                    "sDefaultContent": "",
-                    "bSortable": false
-                }
-            ],
-            "aaSorting": [
-                [
-                    0,
-                    "asc"
-                ]
-            ]
-        };
-
-        oTable_datatable.dataTable(oTable_datatable_params);
-        makeEditable();
-    });
-</script>
+<script type="text/javascript" src="resources/js/userDatatables.js"></script>
 </html>

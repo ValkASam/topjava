@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.service;
 
 
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Collection;
@@ -22,9 +23,13 @@ public interface UserService {
 
     Collection<User> getAll();
 
-    void update(User user) throws NotFoundException;
+    void update(UserTo user);
+
+    void update(User user);
 
     void evictCache();
+
+    void enable(int id, boolean enable);
 
     User getWithMeals(int id);
 }
