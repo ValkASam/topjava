@@ -14,6 +14,23 @@ function makeEditable() {
         return false;
     });
 
+    $("#datetime").datetimepicker({
+        format: 'Y-m-d H:i',
+        lang: 'ru'
+    });
+
+    $("input[type=date]").datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d',
+        lang: 'ru'
+    });
+
+    $("input[type=time]").datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        lang: 'ru'
+    });
+
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(event, jqXHR, options, jsExc);
     });

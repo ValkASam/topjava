@@ -19,32 +19,34 @@ function updateTable(filter) {
 
 $(function () {
     datatableApi = $('#datatable').DataTable({
-        "sAjaxSource": ajaxUrl,
-        "sAjaxDataProp": "",
-        "bPaginate": false,
-        "bInfo": false,
-        "aoColumns": [
+        "ajax": {
+            url: ajaxUrl,
+            dataSrc: ""
+        },
+        "paging": false,
+        "info": false,
+        "columns": [
             {
-                "mData": "dateTime"
+                "data": "dateTime"
             },
             {
-                "mData": "description"
+                "data": "description"
             },
             {
-                "mData": "calories"
+                "data": "calories"
             },
             {
-                "bSortable": false,
-                "sDefaultContent": "",
-                "mRender": renderEditBtn
+                "sortable": false,
+                "defaultContent": "",
+                "render": renderEditBtn
             },
             {
-                "bSortable": false,
-                "sDefaultContent": "",
-                "mRender": renderDeleteBtn
+                "sortable": false,
+                "defaultContent": "",
+                "render": renderDeleteBtn
             }
         ],
-        "aaSorting": [
+        "sorting": [
             [
                 0,
                 "asc"
