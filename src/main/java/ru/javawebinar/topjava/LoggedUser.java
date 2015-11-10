@@ -21,9 +21,9 @@ public class LoggedUser extends org.springframework.security.core.userdetails.Us
         super(user.getEmail(),
                 user.getPassword(),
                 user.isEnabled(),
-                user.isEnabled(),
-                user.isEnabled(),
-                user.isEnabled(),
+                true,
+                true,
+                true,
                 user.getRoles());
 
         this.userTo = UserUtil.asTo(user);

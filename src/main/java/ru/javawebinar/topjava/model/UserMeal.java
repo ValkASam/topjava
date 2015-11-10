@@ -1,6 +1,9 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import ru.javawebinar.topjava.util.validator.annotation.LocalDateTimeMax;
+import ru.javawebinar.topjava.util.validator.annotation.LocalDateTimeMin;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -31,10 +34,13 @@ public class UserMeal extends BaseEntity {
 
     @Column(name = "date_time", nullable = false)
     @NotNull
+    @LocalDateTimeMin(value = "2015-01-24", message = "Дата меньше минимальной (2015-01-24)")
+    @LocalDateTimeMax  //проверим без параметров - должны быть значения по умолчанию
     protected LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false)
     @NotEmpty
+    @Length(min = 3)
     protected String description;
 
     @Column(name = "calories")

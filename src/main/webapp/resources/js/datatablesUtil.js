@@ -2,6 +2,9 @@ function makeEditable() {
     form = $('#detailsForm');
 
     $('#add').click(function () {
+        $("#detailsForm").find("input").each(function (idx, element) {
+            $(element).val("");
+        });
         $('#id').val(0);
         $('#editRow').modal();
     });
@@ -29,7 +32,7 @@ function deleteRow(id) {
     $.ajax({
         url: ajaxUrl + id,
         type: 'DELETE',
-        success: function () {
+        success: function del () {
             updateTable();
             successNoty('Deleted');
         }
@@ -54,11 +57,13 @@ function updateTableByData(data) {
 }
 
 function save() {
+    type = form.find("#id").val()==="0"?"create":"update";
     $.ajax({
         type: "POST",
         url: ajaxUrl,
         data: form.serialize(),
-        success: function () {
+        success: function (param) {
+            param = type; //эмулируем передачу параметра для испольования в updateTable
             $('#editRow').modal('hide');
             updateTable();
             successNoty('Saved');
@@ -103,7 +108,6 @@ function renderEditBtn(data, type, row) {
 
 function renderDeleteBtn(data, type, row) {
     if (type == 'display') {
-        debugger;
         return '<a class="btn btn-xs btn-danger" onclick="deleteRow(' + row.id + ');">Delete</a>';
     }
     return data;
@@ -119,7 +123,6 @@ function renderEditBtn(data, type, row) {
 
 function renderDeleteBtn(data, type, row) {
     if (type == 'display') {
-        debugger;
         return '<a class="btn btn-xs btn-danger" onclick="deleteRow(' + row.id + ');">Delete</a>';
     }
     return data;

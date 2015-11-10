@@ -19,10 +19,11 @@
     <http>
         <intercept-url pattern="/login" access="permitAll"/>
         <intercept-url pattern="/**/admin/**" access="hasRole('ROLE_ADMIN')"/>
-        <intercept-url pattern="/**" access="isAuthenticated()" />
+        <intercept-url pattern="/**" access="isAuthenticated()"/>
         <form-login login-page="/login" default-target-url="/meals"
                     authentication-failure-url="/login?error=true"
-                    login-processing-url="/spring_security_check"/>
+                    login-processing-url="/spring_security_check"
+                    always-use-default-target="true"/>
         <logout logout-success-url="/login"/>
         <csrf disabled="true"/>
     </http>
