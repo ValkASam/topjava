@@ -21,10 +21,11 @@ public class RootController {
     @Autowired
     private UserMealService mealService;
 
-    /*@RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/profile/meals", method = RequestMethod.GET)
     public String root() {
-        return "redirect:meals";
-    }*/
+        //return "redirect:meals"; //такой редирект вызовет ненужную загрузку всех данных в public String mealList
+        return "mealList";
+    }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public String userList() {

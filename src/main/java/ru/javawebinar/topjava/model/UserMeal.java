@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.model;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
 import ru.javawebinar.topjava.util.validator.annotation.LocalDateTimeMax;
 import ru.javawebinar.topjava.util.validator.annotation.LocalDateTimeMin;
 
@@ -44,6 +45,7 @@ public class UserMeal extends BaseEntity {
     protected String description;
 
     @Column(name = "calories")
+    @Range(min = 100, max = 2000)
     protected int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)

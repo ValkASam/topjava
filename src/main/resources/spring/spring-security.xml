@@ -17,10 +17,12 @@
     </http>
 
     <http>
+        <http-basic/>
+        <!--<http-basic/> добавил, чтобы использовать авторизацию и полный тест в UserMealControllerTest.testMealList, вместо укорачивания до редиректа на логин-->
         <intercept-url pattern="/login" access="permitAll"/>
         <intercept-url pattern="/**/admin/**" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>
-        <form-login login-page="/login" default-target-url="/meals"
+        <form-login login-page="/login" default-target-url="/profile/meals"
                     authentication-failure-url="/login?error=true"
                     login-processing-url="/spring_security_check"
                     always-use-default-target="true"/>
