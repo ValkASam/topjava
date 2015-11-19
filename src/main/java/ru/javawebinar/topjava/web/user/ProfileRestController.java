@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ru.javawebinar.topjava.LoggedUser;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.to.UserTo;
+import ru.javawebinar.topjava.web.ExceptionInfoHandler;
 
 /**
  * GKislin
@@ -14,7 +16,7 @@ import ru.javawebinar.topjava.model.User;
  */
 @RestController
 @RequestMapping(ProfileRestController.REST_URL)
-public class ProfileRestController extends AbstractUserController {
+public class ProfileRestController extends AbstractUserController implements ExceptionInfoHandler {
     public static final String REST_URL = "/rest/profile";
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,8 +30,9 @@ public class ProfileRestController extends AbstractUserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@RequestBody User user) {
-        super.update(user, LoggedUser.id());
+    public void update(@RequestBody UserTo userTo) {
+        userTo.setId(LoggedUser.id());
+        super.update(userTo);
     }
 
     @RequestMapping(value = "/text", method = RequestMethod.GET)

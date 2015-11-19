@@ -33,5 +33,9 @@ public class RootControllerTest extends AbstractControllerTest {
 
     @Test
     public void testMealList() throws Exception {
+        mockMvc.perform(get("/meals"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
     }
 }

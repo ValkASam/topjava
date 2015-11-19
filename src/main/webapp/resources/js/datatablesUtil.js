@@ -2,6 +2,7 @@ function makeEditable() {
     form = $('#detailsForm');
 
     $('#add').click(function () {
+        form.find(":input").val("");
         $('#id').val(0);
         $('#editRow').modal();
     });
@@ -13,6 +14,12 @@ function makeEditable() {
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(event, jqXHR, options, jsExc);
+    });
+
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
     });
 }
 
@@ -87,8 +94,10 @@ function successNoty(text) {
 
 function failNoty(event, jqXHR, options, jsExc) {
     closeNote();
+    var errorInfo = $.parseJSON(jqXHR.responseText);
+
     failedNote = noty({
-        text: 'Failed: ' + jqXHR.statusText + "<br>" + jqXHR.responseJSON,
+        text: 'Failed: ' + jqXHR.statusText + "<br>" + errorInfo.cause + "<br>" + errorInfo.detail,
         type: 'error',
         layout: 'bottomRight'
     });
@@ -103,7 +112,6 @@ function renderEditBtn(data, type, row) {
 
 function renderDeleteBtn(data, type, row) {
     if (type == 'display') {
-        debugger;
         return '<a class="btn btn-xs btn-danger" onclick="deleteRow(' + row.id + ');">Delete</a>';
     }
     return data;
