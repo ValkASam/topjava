@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.util.exception.ErrorInfo;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
 
 /**
  * User: gkislin
@@ -25,6 +26,14 @@ public interface ExceptionInfoHandler {
     @ResponseBody
     @Order(Ordered.HIGHEST_PRECEDENCE)
     default ErrorInfo handleError(HttpServletRequest req, NotFoundException e) {
+        return LOG.getErrorInfo(req.getRequestURL(), e);
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(ValidationException.class)
+    @ResponseBody
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    default ErrorInfo handleError(HttpServletRequest req, ValidationException e) {
         return LOG.getErrorInfo(req.getRequestURL(), e);
     }
 

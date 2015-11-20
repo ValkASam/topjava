@@ -35,8 +35,12 @@
             </div>
         </div>
     </div>
+    <div id="error" hidden>${errorinfo}</div>
 </div>
 
 <jsp:include page="fragments/footer.jsp"/>
 </body>
+<script type="text/javascript" src="webjars/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="webjars/noty/2.2.4/jquery.noty.packaged.min.js"></script>
+<script type="text/javascript" src="resources/js/registerUtil.js"></script>
 </html>
