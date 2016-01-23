@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-	Application context definition for PetClinic on JPA.
--->
+        <!--
+            Application context definition for PetClinic on JPA.
+        -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:cache="http://www.springframework.org/schema/cache"
@@ -11,14 +11,14 @@
          http://www.springframework.org/schema/cache
          http://www.springframework.org/schema/cache/spring-cache.xsd">
 
-    <!-- enables scanning for @Cacheable annotation -->
-    <cache:annotation-driven/>
+<!-- enables scanning for @Cacheable annotation -->
+<cache:annotation-driven/>
 
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager"
-        p:cacheManager-ref="ehcache"/>
+<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager"
+      p:cacheManager-ref="ehcache"/>
 
-    <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
-        p:configLocation="classpath:cache/ehcache.xml"
-        p:shared="true"/>
+<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
+      p:configLocation="classpath:cache/ehcache.xml"
+      p:shared="true"/>
 
 </beans>
